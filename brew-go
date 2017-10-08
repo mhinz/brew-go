@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+if ARGV.empty?
+  puts "usage: brew goget golang.org/x/perf/cmd/benchstat"
+  exit 1
+end
+
+date = Date.today
+
+ARGV.each do |url|
+  name = File.basename url
+  gopath = "#{HOMEBREW_PREFIX}/Cellar/goget-#{name}/#{date}"
+
+  ENV["GOPATH"] = gopath
+  ENV.delete "GOBIN"
+
+  system "go get #{url}"
+
+  FileUtils.remove_dir "#{gopath}/pkg", true
+  FileUtils.remove_dir "#{gopath}/src", true
+
+  system "brew unlink goget-#{name}"
+  system "brew link goget-#{name}"
+end
