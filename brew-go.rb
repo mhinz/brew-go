@@ -15,7 +15,7 @@ def cmd_get(packages)
 
   packages.each do |url|
     name = File.basename url
-    gopath = "#{HOMEBREW_PREFIX}/Cellar/brew-go-#{name}/#{date}"
+    gopath = "#{HOMEBREW_CELLAR}/brew-go-#{name}/#{date}"
 
     ENV["GOPATH"] = gopath
     ENV.delete "GOBIN"
@@ -34,7 +34,7 @@ def cmd_get(packages)
 end
 
 def cmd_list
-  puts Dir["#{HOMEBREW_PREFIX}/Cellar/brew-go-*"].map { |dir| File.basename dir }
+  puts Dir["#{HOMEBREW_CELLAR}/brew-go-*"].map { |dir| File.basename dir }
 end
 
 case ARGV.shift
