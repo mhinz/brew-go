@@ -34,9 +34,7 @@ def cmd_get(packages)
 end
 
 def cmd_list
-  Dir.chdir "#{HOMEBREW_PREFIX}/Cellar" do
-    puts Dir["brew-go-*"]
-  end
+  puts Dir["#{HOMEBREW_PREFIX}/Cellar/brew-go-*"].map { |dir| File.basename dir }
 end
 
 case ARGV.shift
