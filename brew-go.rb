@@ -38,10 +38,10 @@ def cmd_list
 end
 
 case ARGV.shift
-when 'get'
+when 'get', 'ge', 'g'
   helpme if ARGV.empty?
   cmd_get ARGV
-when 'list'
+when 'list', 'lis', 'li', 'l'
   cmd_list
 else
   helpme
