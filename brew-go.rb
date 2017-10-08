@@ -1,27 +1,42 @@
 #!/usr/bin/env ruby
 
-if ARGV.empty?
-  puts "usage: brew go golang.org/x/perf/cmd/benchstat"
+def helpme
+  puts <<~HEREDOC
+    Usage:
+      brew go get <url to package> ...
+    Examples:
+      brew go get golang.org/x/perf/cmd/benchstat
+  HEREDOC
   exit 1
 end
 
-date = Date.today
+def cmd_get(packages)
+  date = Date.today
 
-ARGV.each do |url|
-  name = File.basename url
-  brewpath = "#{HOMEBREW_PREFIX}/Cellar/brew-go-#{name}"
-  gopath = "#{brewpath}/#{date}"
+  packages.each do |url|
+    name = File.basename url
+    gopath = "#{HOMEBREW_PREFIX}/Cellar/brew-go-#{name}/#{date}"
 
-  ENV["GOPATH"] = gopath
-  ENV.delete "GOBIN"
+    ENV["GOPATH"] = gopath
+    ENV.delete "GOBIN"
 
-  system "go get #{url}"
+    system "go get #{url}"
+    exit 1 unless $?.success?
 
-  FileUtils.remove_dir "#{gopath}/pkg", true
-  FileUtils.remove_dir "#{gopath}/src", true
+    FileUtils.remove_dir "#{gopath}/pkg", true
+    FileUtils.remove_dir "#{gopath}/src", true
 
-  IO.write "#{brewpath}/url", "#{url}\n"
+    IO.write "#{gopath}/url", "#{url}\n"
 
-  system "brew unlink brew-go-#{name}"
-  system "brew link brew-go-#{name}"
+    system "brew unlink brew-go-#{name}"
+    system "brew link brew-go-#{name}"
+  end
+end
+
+case ARGV.shift
+when 'get'
+  helpme if ARGV.empty?
+  cmd_get ARGV
+else
+  helpme
 end
