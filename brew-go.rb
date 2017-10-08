@@ -33,10 +33,18 @@ def cmd_get(packages)
   end
 end
 
+def cmd_list
+  Dir.chdir "#{HOMEBREW_PREFIX}/Cellar" do
+    puts Dir["brew-go-*"]
+  end
+end
+
 case ARGV.shift
 when 'get'
   helpme if ARGV.empty?
   cmd_get ARGV
+when 'list'
+  cmd_list
 else
   helpme
 end
