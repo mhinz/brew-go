@@ -7,6 +7,8 @@ Internally brew-go still relies on `go get`, but puts things into
 was needed for building, and links the binary to `/usr/local/bin/*`. All in one
 go.
 
+The gem was inspired by [this blog post](https://blog.filippo.io/cleaning-up-my-gopath-with-homebrew).
+
 ## Installation
 
     $ gem install brew-go
