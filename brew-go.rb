@@ -16,22 +16,26 @@ def helpme
 end
 
 def cmd_get(packages)
+  threads = []
   packages.each do |url|
-    name = File.basename url
-    gopath = "#{HOMEBREW_CELLAR}/brew-go-#{name}/#{url.gsub('/', '#')}"
+    threads << Thread.new do
+      name = File.basename url
+      gopath = "#{HOMEBREW_CELLAR}/brew-go-#{name}/#{url.gsub('/', '#')}"
 
-    ENV["GOPATH"] = gopath
-    ENV.delete "GOBIN"
+      ENV["GOPATH"] = gopath
+      ENV.delete "GOBIN"
 
-    system "go get #{url}"
-    exit 1 unless $?.success?
+      system "go get #{url}"
+      exit 1 unless $?.success?
 
-    FileUtils.remove_dir "#{gopath}/pkg", true
-    FileUtils.remove_dir "#{gopath}/src", true
+      FileUtils.remove_dir "#{gopath}/pkg", true
+      FileUtils.remove_dir "#{gopath}/src", true
 
-    system "brew unlink brew-go-#{name}"
-    system "brew link brew-go-#{name}"
+      system "brew unlink brew-go-#{name}"
+      system "brew link brew-go-#{name}"
+    end
   end
+  threads.each { |thr| thr.join }
 end
 
 def cmd_list(name)
