@@ -20,19 +20,26 @@ def cmd_get(packages)
   packages.each do |url|
     threads << Thread.new do
       name = File.basename url
-      gopath = "#{HOMEBREW_CELLAR}/brew-go-#{name}/#{url.gsub('/', '#')}"
+      cellarpath = "#{HOMEBREW_CELLAR}/brew-go-#{name}"
+      gopath = "#{cellarpath}/#{url.gsub('/', '#')}"
 
       ENV["GOPATH"] = gopath
       ENV.delete "GOBIN"
 
       system "go get #{url}"
-      exit 1 unless $?.success?
+      unless $?.success?
+        puts "[\x1b[31;1m✗\x1b[0m] #{url}"
+        FileUtils.remove_dir "#{cellarpath}", true
+        Thread.exit
+      end
+
+      puts "[\x1b[32;1m✓\x1b[0m] \x1b[1mbrew-go-#{name}\x1b[0m <- #{url}"
 
       FileUtils.remove_dir "#{gopath}/pkg", true
       FileUtils.remove_dir "#{gopath}/src", true
 
-      system "brew unlink brew-go-#{name}"
-      system "brew link brew-go-#{name}"
+      system "brew unlink brew-go-#{name}", out: File::NULL
+      system "brew link brew-go-#{name}", out: File::NULL
     end
   end
   threads.each { |thr| thr.join }
