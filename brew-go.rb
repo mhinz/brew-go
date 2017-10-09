@@ -34,10 +34,7 @@ def cmd_common
     $ brew go get guru
 
   HEREDOC
-  maxlen = @commons.keys.map(&:length).max
-  @commons.each do |name,url|
-    puts "\x1b[1m#{name.ljust(maxlen)}\x1b[0m (#{url})"
-  end
+  print_formatted_list(@commons)
 end
 
 def cmd_get(packages)
@@ -74,7 +71,13 @@ end
 
 def cmd_list(name)
   if name.nil?
-    puts Dir["#{HOMEBREW_CELLAR}/brew-go-*"].map { |dir| File.basename dir }
+    installed = {}
+    Dir["#{HOMEBREW_CELLAR}/brew-go-*/*"].each do |path|
+      name = File.basename(Pathname(path).parent.to_s).sub("brew-go-", "")
+      url = get_url_from_cellar_path(path)
+      installed[name] = url
+    end
+    print_formatted_list(installed)
     return
   end
 
@@ -107,6 +110,13 @@ end
 
 def resolve_common_packages(packages)
   packages.map { |p| @commons[p] || p }
+end
+
+def print_formatted_list(packages)
+  maxlen = packages.keys.map(&:length).max
+  packages.each do |name, url|
+    puts "\x1b[1m#{name.ljust(maxlen)}\x1b[0m (#{url})"
+  end
 end
 
 case ARGV.shift
