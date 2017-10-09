@@ -1,5 +1,7 @@
 # brew-go
 
+[![Gem version](https://img.shields.io/gem/v/brew-go.svg)](https://rubygems.org/gems/brew-go)
+
 Manage Go tools via Homebrew. Don't clutter your `$GOPATH` anymore.
 
 Internally brew-go still relies on `go get`, but puts things into
