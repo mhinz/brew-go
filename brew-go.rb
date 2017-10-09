@@ -1,5 +1,12 @@
 #!/usr/bin/env ruby
 
+require 'pathname'
+require 'fileutils'
+
+unless defined? HOMEBREW_CELLAR
+  HOMEBREW_CELLAR = `brew --cellar`.chomp
+end
+
 @commons = {
   "benchstat" => "golang.org/x/perf/cmd/benchstat",
   "dlv" => "github.com/derekparker/delve/cmd/dlv",
