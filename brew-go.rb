@@ -12,6 +12,7 @@ def helpme
 
     Usage:
       $ brew go get <url to package> ...
+      $ brew go rm <name> ...
       $ brew go list [name]
       $ brew go update [name] ...
       $ brew go common
@@ -90,6 +91,13 @@ def cmd_list(name)
   end
 end
 
+def cmd_rm(names)
+  names.each do |name|
+    name = "brew-go-#{name}" unless name.start_with?("brew-go-")
+    system "brew uninstall #{name}"
+  end
+end
+
 def cmd_update(names)
   names = names.map { |name| name.start_with?("brew-go-") ? name : "brew-go-#{name}" }
   urls = if names.empty?
@@ -126,6 +134,8 @@ when 'get', 'ge', 'g'
   ARGV.empty? ? cmd_common : cmd_get(ARGV)
 when 'list', 'lis', 'li', 'l'
   cmd_list ARGV.first
+when 'rm', 'r'
+  cmd_rm ARGV
 when 'update', 'updat', 'upda', 'upd', 'up', 'u'
   cmd_update ARGV
 else
