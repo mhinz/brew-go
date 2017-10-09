@@ -44,3 +44,24 @@ Example:
 
     $ brew uninstall brew-go-benchstat
     Uninstalling /usr/local/Cellar/brew-go-benchstat/golang.org#x#perf#cmd#benchstat... (3.6MB)
+
+    $ brew go common
+    Here are a few commonly used tools. The names can be used as shortcuts:
+      $ brew go get guru
+
+    benchstat    (golang.org/x/perf/cmd/benchstat)
+    dlv          (github.com/derekparker/delve/cmd/dlv)
+    errcheck     (github.com/kisielk/errcheck)
+    fillstruct   (github.com/davidrjenni/reftools/cmd/fillstruct)
+    gocode       (github.com/nsf/gocode)
+    godef        (github.com/rogpeppe/godef)
+    goimports    (golang.org/x/tools/cmd/goimports)
+    golint       (github.com/golang/lint/golint)
+    gometalinter (github.com/alecthomas/gometalinter)
+    gorename     (golang.org/x/tools/cmd/gorename)
+    gotags       (github.com/jstemmer/gotags)
+    guru         (golang.org/x/tools/cmd/guru)
+    impl         (github.com/josharian/impl)
+    interfacer   (mvdan.cc/interfacer)
+    staticcheck  (honnef.co/go/tools/cmd/staticcheck)
+    unused       (honnef.co/go/tools/cmd/unused)
