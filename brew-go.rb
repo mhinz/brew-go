@@ -49,12 +49,31 @@ def cmd_list(name)
   end
 end
 
+def cmd_update(names)
+  urls = if names.empty?
+           Dir["#{HOMEBREW_CELLAR}/brew-go-*/*"].map do |path|
+             get_url_from_cellar_path path
+           end
+         else
+           names.map do |name|
+             get_url_from_cellar_path Dir["#{HOMEBREW_CELLAR}/#{name}/*"].first
+           end
+         end
+  cmd_get urls
+end
+
+def get_url_from_cellar_path(path)
+  File.basename(path).gsub '#', '/'
+end
+
 case ARGV.shift
 when 'get', 'ge', 'g'
   helpme if ARGV.empty?
   cmd_get ARGV
 when 'list', 'lis', 'li', 'l'
   cmd_list ARGV.first
+when 'update', 'updat', 'upda', 'upd', 'up', 'u'
+  cmd_update ARGV
 else
   helpme
 end
