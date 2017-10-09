@@ -16,11 +16,9 @@ def helpme
 end
 
 def cmd_get(packages)
-  date = Date.today
-
   packages.each do |url|
     name = File.basename url
-    gopath = "#{HOMEBREW_CELLAR}/brew-go-#{name}/#{date}"
+    gopath = "#{HOMEBREW_CELLAR}/brew-go-#{name}/#{url.gsub('/', '#')}"
 
     ENV["GOPATH"] = gopath
     ENV.delete "GOBIN"
@@ -30,8 +28,6 @@ def cmd_get(packages)
 
     FileUtils.remove_dir "#{gopath}/pkg", true
     FileUtils.remove_dir "#{gopath}/src", true
-
-    IO.write "#{gopath}/url", "#{url}\n"
 
     system "brew unlink brew-go-#{name}"
     system "brew link brew-go-#{name}"
