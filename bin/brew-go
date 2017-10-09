@@ -65,7 +65,7 @@ def cmd_get(packages)
         Thread.exit
       end
 
-      puts "[\x1b[32;1m✓\x1b[0m] \x1b[1mbrew-go-#{name}\x1b[0m (#{url})"
+      puts "[\x1b[32;1m✓\x1b[0m] \x1b[1m#{name}\x1b[0m (#{url})"
 
       FileUtils.remove_dir "#{gopath}/pkg", true
       FileUtils.remove_dir "#{gopath}/src", true
@@ -89,6 +89,7 @@ def cmd_list(name)
     return
   end
 
+  name = "brew-go-#{name}" unless name.start_with?("brew-go")
   path = "#{HOMEBREW_CELLAR}/#{name}"
   if Dir.exist? path
     puts Dir["#{path}/**/*"].select { |f| File.file? f }

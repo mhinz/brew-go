@@ -23,6 +23,10 @@ Example:
     [✓] benchstat (golang.org/x/perf/cmd/benchstat)
     [✓] guru (golang.org/x/tools/cmd/guru)
 
+    $ which benchstat guru
+    /usr/local/bin/guru
+    /usr/local/bin/benchstat
+
     $ brew go list
     benchstat (golang.org/x/perf/cmd/benchstat)
     guru      (golang.org/x/tools/cmd/guru)
@@ -32,3 +36,9 @@ Example:
 
     $ brew go update guru
     [✓] brew-go-guru (golang.org/x/tools/cmd/guru)
+
+    $ brew go rm guru
+    Uninstalling /usr/local/Cellar/brew-go-guru/golang.org#x#tools#cmd#guru... (7.8MB)
+
+    $ brew uninstall brew-go-benchstat
+    Uninstalling /usr/local/Cellar/brew-go-benchstat/golang.org#x#perf#cmd#benchstat... (3.6MB)
