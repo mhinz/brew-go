@@ -1,22 +1,49 @@
 #!/usr/bin/env ruby
 
+@commons = {
+  "benchstat" => "golang.org/x/perf/cmd/benchstat",
+  "dlv" => "github.com/derekparker/delve/cmd/dlv",
+  "guru" => "golang.org/x/tools/cmd/guru",
+}
+
 def helpme
   puts <<~HEREDOC
-    Manage Go packages via brew.
+    Manage Go packages via Homebrew.
 
     Usage:
-      brew go get <url to package> ...
-      brew go list [keg]
+      $ brew go get <url to package> ...
+      $ brew go list [name]
+      $ brew go update [name] ...
+      $ brew go common
 
     Examples:
-      brew go get golang.org/x/perf/cmd/benchstat
-      brew list brew-go-benchstat
+      $ brew go get golang.org/x/tools/cmd/guru
+      $ brew go get guru
+      $ brew go list
+      $ brew go list brew-go-guru
+      $ brew go list guru
+      $ brew go update
+      $ brew go update guru
   HEREDOC
   exit 1
 end
 
+def cmd_common
+  puts <<~HEREDOC
+  Here are a few commonly used tools. The names can be used as shortcuts:
+    $ brew go get guru
+
+  HEREDOC
+  maxlen = @commons.keys.map(&:length).max
+  @commons.each do |name,url|
+    puts "\x1b[1m#{name.ljust(maxlen)}\x1b[0m (#{url})"
+  end
+end
+
 def cmd_get(packages)
   threads = []
+  packages = resolve_common_packages packages
+
   packages.each do |url|
     threads << Thread.new do
       name = File.basename url
@@ -33,7 +60,7 @@ def cmd_get(packages)
         Thread.exit
       end
 
-      puts "[\x1b[32;1m✓\x1b[0m] \x1b[1mbrew-go-#{name}\x1b[0m <- #{url}"
+      puts "[\x1b[32;1m✓\x1b[0m] \x1b[1mbrew-go-#{name}\x1b[0m (#{url})"
 
       FileUtils.remove_dir "#{gopath}/pkg", true
       FileUtils.remove_dir "#{gopath}/src", true
@@ -61,6 +88,7 @@ def cmd_list(name)
 end
 
 def cmd_update(names)
+  names = names.map { |name| name.start_with?("brew-go-") ? name : "brew-go-#{name}" }
   urls = if names.empty?
            Dir["#{HOMEBREW_CELLAR}/brew-go-*/*"].map do |path|
              get_url_from_cellar_path path
@@ -77,10 +105,15 @@ def get_url_from_cellar_path(path)
   File.basename(path).gsub '#', '/'
 end
 
+def resolve_common_packages(packages)
+  packages.map { |p| @commons[p] || p }
+end
+
 case ARGV.shift
+when 'common', 'commo', 'comm', 'com', 'co', 'c'
+  cmd_common
 when 'get', 'ge', 'g'
-  helpme if ARGV.empty?
-  cmd_get ARGV
+  ARGV.empty? ? cmd_common : cmd_get(ARGV)
 when 'list', 'lis', 'li', 'l'
   cmd_list ARGV.first
 when 'update', 'updat', 'upda', 'upd', 'up', 'u'
