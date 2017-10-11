@@ -21,6 +21,10 @@ you have a local bin directory in $PATH, e.g. `~/bin`, use this instead:
 
     $ gem install --user-install -n ~/bin brew-go
 
+Alternatively, just download [the
+script](https://raw.githubusercontent.com/mhinz/brew-go/master/bin/brew-go) in
+any directory from $PATH and make it executable.
+
 ## Usage
 
 See `brew go` for all available commands.
