@@ -15,6 +15,12 @@ The gem was inspired by [this blog post](https://blog.filippo.io/cleaning-up-my-
 
     $ gem install brew-go
 
+If you're not a Ruby user, chances are that you use the system's `/usr/bin/gem`,
+which tries installing to a directory that isn't writable by the user. Assuming
+you have a local bin directory in $PATH, e.g. `~/bin`, use this instead:
+
+    $ gem install --user-install -n ~/bin brew-go
+
 ## Usage
 
 See `brew go` for all available commands.
