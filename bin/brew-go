@@ -143,7 +143,7 @@ end
 
 def print_formatted_list(packages)
   maxlen = packages.keys.map(&:length).max
-  packages.each do |name, url|
+  packages.sort.each do |name, url|
     puts "\x1b[1m#{name.ljust(maxlen)}\x1b[0m (#{url})"
   end
 end
