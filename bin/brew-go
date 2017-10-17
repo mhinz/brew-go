@@ -8,22 +8,22 @@ unless defined? HOMEBREW_CELLAR
 end
 
 @commons = {
-  "benchstat" => "golang.org/x/perf/cmd/benchstat",
-  "dlv" => "github.com/derekparker/delve/cmd/dlv",
-  "errcheck" => "github.com/kisielk/errcheck",
-  "fillstruct" => "github.com/davidrjenni/reftools/cmd/fillstruct",
-  "gocode" => "github.com/nsf/gocode",
-  "godef" => "github.com/rogpeppe/godef",
-  "goimports" => "golang.org/x/tools/cmd/goimports",
-  "golint" => "github.com/golang/lint/golint",
-  "gometalinter" => "github.com/alecthomas/gometalinter",
-  "gorename" => "golang.org/x/tools/cmd/gorename",
-  "gotags" => "github.com/jstemmer/gotags",
-  "guru" => "golang.org/x/tools/cmd/guru",
-  "impl" => "github.com/josharian/impl",
-  "interfacer" => "mvdan.cc/interfacer",
-  "staticcheck" => "honnef.co/go/tools/cmd/staticcheck",
-  "unused" => "honnef.co/go/tools/cmd/unused",
+  'benchstat' => 'golang.org/x/perf/cmd/benchstat',
+  'dlv' => 'github.com/derekparker/delve/cmd/dlv',
+  'errcheck' => 'github.com/kisielk/errcheck',
+  'fillstruct' => 'github.com/davidrjenni/reftools/cmd/fillstruct',
+  'gocode' => 'github.com/nsf/gocode',
+  'godef' => 'github.com/rogpeppe/godef',
+  'goimports' => 'golang.org/x/tools/cmd/goimports',
+  'golint' => 'github.com/golang/lint/golint',
+  'gometalinter' => 'github.com/alecthomas/gometalinter',
+  'gorename' => 'golang.org/x/tools/cmd/gorename',
+  'gotags' => 'github.com/jstemmer/gotags',
+  'guru' => 'golang.org/x/tools/cmd/guru',
+  'impl' => 'github.com/josharian/impl',
+  'interfacer' => 'mvdan.cc/interfacer',
+  'staticcheck' => 'honnef.co/go/tools/cmd/staticcheck',
+  'unused' => 'honnef.co/go/tools/cmd/unused'
 }
 
 def helpme
@@ -66,15 +66,15 @@ def cmd_get(packages)
     threads << Thread.new do
       name = File.basename url
       cellarpath = "#{HOMEBREW_CELLAR}/brew-go-#{name}"
-      gopath = "#{cellarpath}/#{url.gsub('/', '#')}"
+      gopath = "#{cellarpath}/#{url.tr '/', '#'}"
 
-      ENV["GOPATH"] = gopath
-      ENV.delete "GOBIN"
+      ENV['GOPATH'] = gopath
+      ENV.delete 'GOBIN'
 
       system "go get #{url}"
       unless $?.success?
         puts "[\x1b[31;1m✗\x1b[0m] #{url}"
-        FileUtils.remove_dir "#{cellarpath}", true
+        FileUtils.remove_dir cellarpath, true
         Thread.exit
       end
 
@@ -87,14 +87,14 @@ def cmd_get(packages)
       system "brew link brew-go-#{name}", out: File::NULL
     end
   end
-  threads.each { |thr| thr.join }
+  threads.each(&:join)
 end
 
 def cmd_list(name)
   if name.nil?
     installed = {}
     Dir["#{HOMEBREW_CELLAR}/brew-go-*/*"].each do |path|
-      name = File.basename(Pathname(path).parent.to_s).sub("brew-go-", "")
+      name = File.basename(Pathname(path).parent.to_s).sub('brew-go-', '')
       url = get_url_from_cellar_path(path)
       installed[name] = url
     end
@@ -102,10 +102,10 @@ def cmd_list(name)
     return
   end
 
-  name = "brew-go-#{name}" unless name.start_with?("brew-go")
+  name = "brew-go-#{name}" unless name.start_with?('brew-go')
   path = "#{HOMEBREW_CELLAR}/#{name}"
   if Dir.exist? path
-    puts Dir["#{path}/**/*"].select { |f| File.file? f }
+    puts(Dir["#{path}/**/*"].select { |f| File.file? f })
   else
     puts "No such keg: #{path}"
     exit 1
@@ -114,13 +114,15 @@ end
 
 def cmd_rm(names)
   names.each do |name|
-    name = "brew-go-#{name}" unless name.start_with?("brew-go-")
+    name = "brew-go-#{name}" unless name.start_with?('brew-go-')
     system "brew uninstall #{name}"
   end
 end
 
 def cmd_update(names)
-  names = names.map { |name| name.start_with?("brew-go-") ? name : "brew-go-#{name}" }
+  names = names.map do |name|
+    name.start_with?('brew-go-') ? name : "brew-go-#{name}"
+  end
   urls = if names.empty?
            Dir["#{HOMEBREW_CELLAR}/brew-go-*/*"].map do |path|
              get_url_from_cellar_path path
@@ -134,7 +136,7 @@ def cmd_update(names)
 end
 
 def get_url_from_cellar_path(path)
-  File.basename(path).gsub '#', '/'
+  File.basename(path).tr '#', '/'
 end
 
 def resolve_common_packages(packages)
